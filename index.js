@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -31,13 +31,36 @@ async function run() {
       const product = await cursor.toArray();
       res.send(product);
     })
-    app.post('/add',async(req,res)=>{
+
+    app.put("/task/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = req.body;
+      const filter = { _id: id };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await taskCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
+
+    
+    app.post('/task',async(req,res)=>{
+
       // const data=req.body
       // console.log('ok dome')
       // const result = await taskCollection.insertOne(data);
       // res.send(result)
-      console.log('ok')
+      console.log(req)
     })
+
+    app.delete('/task/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = await taskCollection.deleteOne(query);
+      res.send(result);
+  })
   }
   finally {
   }
