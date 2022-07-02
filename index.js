@@ -9,16 +9,8 @@ app.use(express.json());
 
 
 
-
-
-
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.z2avz.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
-
-
 
 async function run() {
   try{
@@ -34,11 +26,11 @@ async function run() {
 
     app.put("/task/:id", async (req, res) => {
       const id = req.params.id;
-      const user = req.body;
+      const task = req.body;
       const filter = { _id: id };
       const options = { upsert: true };
       const updateDoc = {
-        $set: user,
+        $set: task,
       };
       const result = await taskCollection.updateOne(filter, updateDoc, options);
       res.send(result);
@@ -48,11 +40,11 @@ async function run() {
     
     app.post('/task',async(req,res)=>{
 
-      // const data=req.body
-      // console.log('ok dome')
-      // const result = await taskCollection.insertOne(data);
-      // res.send(result)
-      console.log(req)
+      const data=req.body
+      console.log(data)
+      const result = await taskCollection.insertOne(data);
+      res.send(result)
+      // console.log(req)
     })
 
     app.delete('/task/:id', async(req, res) =>{
